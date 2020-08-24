@@ -1,0 +1,47 @@
+{
+  "name": "@dmidz/rest",
+  "version": "2.0.0",
+  "author": "David MARTIN <david@dmidz.com>",
+  "description": "RESTful API to be used with hapi.js.",
+  "main": "src/index.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmidz/nodejs-rest.git"
+  },
+  "scripts": {
+    "test": "lab test/unit.js -v -m 15000",
+    "preversion": "npm test",
+    "release:patch": "npm version patch -m \"release version %s\"",
+    "release:minor": "npm version minor -m \"release version %s\"",
+    "release:major": "npm version major -m \"release version %s\"",
+    "postversion": "git push origin master && git push origin master --tags"
+  },
+  "dependencies": {
+    "@dmidz/crud": "^2.0.4",
+    "@hapi/boom": "^9.1.0",
+    "bcrypt": "^5.0.0",
+    "hapi-auth-jwt2": "^10.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@hapi/code": "^8.0.2",
+    "@hapi/hapi": "^19.2.0",
+    "@hapi/lab": "^23.0.0",
+    "sqlite3": "^5.0.0"
+  },
+  "engines": {
+    "node": ">= 12.16.1",
+    "npm": ">= 6.13.4"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "restful"
+  ]
+}
