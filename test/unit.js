@@ -5,8 +5,6 @@ const Lab = require( '@hapi/lab' ),
 	Server = require( './_server' )
 ;
 
-Error.stackTraceLimit = 3;
-
 lab.experiment( '//__ TEST @dmidz/rest', function(){
 	
 	let server = null;
@@ -15,6 +13,7 @@ lab.experiment( '//__ TEST @dmidz/rest', function(){
 	const collection_limit = 10;
 	
 	const options = {
+		stackTraceLimit: 3,
 		plugins: {
 			'api-rest': {
 				options: {

@@ -1,5 +1,6 @@
 const Hapi = require( '@hapi/hapi' ),
 	Path = require( 'path' ),
+	isNaN = require( 'lodash/isNaN' ),
 	{ merge, isStringLen } = require('../src/utils')
 	;
 
@@ -109,24 +110,24 @@ module.exports = async function( options ){
 						},
 						onModels: function( models, Sequelize, plugin ){
 							//__ good place for associations ( after all models loaded but before sync )
-							console.log( '...onModels', models );
+							// console.log( '...onModels', models, plugin );
 							models.Task.hasMany( models.Task, { as: 'children', foreignKey: 'parent' } );
-/*
-							if( models.User ){
-								models.Task.belongsTo( models.User, { foreignKey: 'user_id' } );
-								models.User.hasMany( models.Task, { foreignKey: 'user_id', as: 'tasks' } );
-							}
-*/
+							// if( models.User ){
+							// 	models.User.hasMany( models.Task, { foreignKey: 'user_id', as: 'tasks' } );
+							// }
 						}
 					}
 				}
 			}
 		},
 		register_options: {},
-		
+		stackTraceLimit: null,
 	}, options, true );
 	// console.log('...proto', options.plugins['api-rest'].options.db_crud );
 	// console.log('...creating server', options );
+
+	if( !isNaN( options.stackTraceLimit ) ){
+		Error.stackTraceLimit = options.stackTraceLimit;}
 	
 	const server = new Hapi.Server( options.server );
 	
