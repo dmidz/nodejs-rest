@@ -18,7 +18,6 @@ function ApiRest( server, options ){
 		collection_limit: 20,
 		debug: false,
 		debug_cleanup: false,
-		db_crud: null,
 		auth: {
 			secret: null,//___ mandatory
 			// secret: '!AmazingSecret!',//___ mandatory
@@ -85,6 +84,89 @@ function ApiRest( server, options ){
 			}
 			
 		},
+		db_crud: {//__ checkout @dmidz/crud for options
+			dir_models: './models',
+			debug: false,
+			auth_enabled: true,
+			sync: {
+				// force : !from_cmd
+			},
+			db_sequelize: {
+				database: 'db_test',
+				operatorsAliases: false,
+				dialect: 'sqlite',//'mysql'|'mariadb'|'sqlite'|'postgres'|'mssql',
+				user: 'demo',
+				password: 'demo',
+				host: 'localhost',
+				pool: { max: 5, min: 0, idle: 10000 },
+				storage: ':memory:'//Path.join( __dirname, 'data/db_test.sqlite' )
+				// , logging: console.log// false
+			},
+			models: {//__ key paired models options, samples :
+				// User: {
+				// 	sync: { force: true },
+				// 	roles: {
+				// 		admin: 1,
+				// 		user: { read: 'owner' }
+				// 	},
+				// 	mock: function( model ){
+				// 		return model.bulkCreate( [
+				// 			{ login: 'admin@domain.org', password: 'demo', roles: 'admin' },
+				// 			{ login: 'user1@domain.org', password: 'demo', roles: 'user', confirmed: 1 },
+				// 			{ login: 'user2@domain.org', password: 'demo', roles: 'user', confirmed: 1, disabled: 1 },
+				// 			{ login: 'user3@domain.org', password: 'demo', roles: 'user' },
+				// 			{ login: 'user4@domain.org', password: 'demo', roles: 'manager', confirmed: 1 }
+				// 		] )
+				// 		;
+				// 	}
+				// },
+				// Task: {
+				// 	sync: { force: true },
+				// 	// disabled:1,
+				// 	roles: {
+				// 		admin: 1,
+				// 		// , user: {
+				// 		// 	// create:
+				// 		// }
+				// 		manager: {
+				// 			create: 1,
+				// 			read: 1,
+				// 			update(){
+				// 				return {
+				// 					fields: ['title'],
+				// 					owner: true
+				// 				};
+				// 			},
+				// 			delete: 1
+				// 		},
+				// 		user: {
+				// 			create: function(){
+				// 				return {};
+				// 			},
+				// 			read: 'owner', update: 'owner', delete: 'owner'
+				// 		}
+				// 	},
+				// 	mock: function( model ){
+				// 		return model.bulkCreate( [
+				// 			{ title: 'Task 1', content: 'Content Task 1 owned by user 1', user_id: 1 },
+				// 			{ title: 'Task 2', content: 'Content Task 2 owned by user 2', user_id: 2 },
+				// 			{ title: 'Task 3', content: 'Content Task 3 owned by user 3', user_id: 3 },
+				// 			{ title: 'Task 4', content: 'Content Task 4 owned by user 4', user_id: 4 },
+				// 			{ title: 'Task 5', content: 'Content Task 5 owned by user 5', user_id: 5 }
+				// 		] )
+				// 		;
+				// 	}
+				// }
+			},
+			// onModels: function( models, Sequelize, plugin ){
+			// 	//__ good place for associations ( after all models loaded but before sync )
+			// 	// console.log( '...onModels', models, plugin );
+			// 	models.Task.hasMany( models.Task, { as: 'children', foreignKey: 'parent' } );
+			// 	// if( models.User ){
+			// 	// 	models.User.hasMany( models.Task, { foreignKey: 'user_id', as: 'tasks' } );
+			// 	// }
+			// }
+		},
 		cleanup_result: {
 			item_fields: ['name', 'errors', 'fields'],
 			err_fields: ['message', 'type', 'path', 'value', 'origin', 'validatorKey', 'validatorName', 'validatorArgs']
@@ -93,11 +175,16 @@ function ApiRest( server, options ){
 	
 	me.routes_prefix = server.realm.modifiers.route.prefix;
 	
-	if( !me.options.db_crud ) throw new Error( 'UndefinedDbCrud : options.db_crud must be defined.' );
+	if( !me.options.db_crud ){	throw new Error( 'UndefinedDbCrud : options.db_crud must be defined.' );}
 	
-	me.db_crud = new DbCrud( me.options.db_crud );
+	let crud_options = me.options.db_crud;
+	if( !me.options.auth ){//__ disable crud auth if rest auth disabled
+		crud_options = merge( {}, crud_options );
+		crud_options.auth_enabled = false;
+	}
+	me.db_crud = new DbCrud( crud_options );
 	
-	if( me.options.debug ) console.log( '...new ApiRest', me.options );
+	if( me.options.debug ) console.log( '...new ApiRest', __dirname, me.options );
 }
 
 //___ TODO : implement querystring

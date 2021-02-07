@@ -36,22 +36,6 @@ module.exports = async function( options ){
 					debug_cleanup: false,
 					db_crud: {
 						dir_models: Path.join( __dirname, 'models' ),
-						debug: false,
-						db_sequelize: {
-							database: 'db_test',
-							operatorsAliases: false,
-							dialect: 'sqlite',//'mysql'|'mariadb'|'sqlite'|'postgres'|'mssql',
-							user: 'demo',
-							password: 'demo',
-							host: 'localhost',
-							pool: { max: 5, min: 0, idle: 10000 },
-							storage: ':memory:'//Path.join( __dirname, 'data/db_test.sqlite' )
-							// , logging: console.log// false
-						},
-						sync: {
-							// force : !from_cmd
-						},
-						auth_enabled: true,
 						models: {
 							User: {
 								sync: { force: true },
