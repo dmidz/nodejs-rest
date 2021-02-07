@@ -22,7 +22,7 @@
     "npm:publish": "npm publish --access public"
   },
   "dependencies": {
-    "@dmidz/crud": "^2.0.4",
+    "@dmidz/crud": "^2.2.0",
     "@hapi/boom": "^9.1.0",
     "bcrypt": "^5.0.0",
     "hapi-auth-jwt2": "^10.1.0",
