@@ -1,6 +1,6 @@
 {
   "name": "@dmidz/rest",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": "David MARTIN <david@dmidz.com>",
   "description": "RESTful API to be used with hapi.js.",
   "main": "src/index.js",
