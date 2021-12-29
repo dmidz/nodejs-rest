@@ -11,9 +11,6 @@ function ApiRest( server, options ){
 	const me = this;
 	me.server = server;
 	
-	// const reg_jwt_err_msg = /Invalid credentials|Invalid token|Expired token/i;
-	// const reg_jwt_err_msg = /token is null|Invalid token|Expired token/i;
-	
 	me.options = merge( {
 		collection_limit: 20,
 		debug: false,
@@ -351,17 +348,15 @@ Object.assign( ApiRest.prototype, {
 							result = await me.db_crud.update( request.params.model, {
 								[ request.params.id ]: request.payload
 							}, {
-								// scopes: 'single'
-								// single_key: request.params.id,
 								credentials: request.auth.credentials
 							} );
-							// console.log('>>> update result', result );
+							console.log('>>> update result', result );
 							result = result[ request.params.id ];
 							if( result instanceof Error ) throw result;
 							
 							// console.log('............. res', res );
 							
-							if( !result.result ) throw new Error( 'RecordNotFound.' );//__ update count is falsy (0)
+							if( !result ) throw new Error( 'RecordNotFound.' );//__ update count is falsy (0)
 							
 							result = me.cleanupResult( result );
 							break;

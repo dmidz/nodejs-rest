@@ -4,7 +4,7 @@ module.exports = function( sequelize, DataTypes ){
 	const models = sequelize.models;
 	const salt = bcrypt.genSaltSync( 8 );
 	
-	const User = sequelize.define( 'User', {
+	return sequelize.define( 'User', {
 		id: { type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true },
 		login: { type: DataTypes.STRING, allowNull: false/*, unique: true*/ },
 		disabled: { type: DataTypes.INTEGER, allowNull: true },
@@ -44,9 +44,7 @@ module.exports = function( sequelize, DataTypes ){
 				};
 			}
 		}
-		
 	} );
-	return User;
 };
 
 

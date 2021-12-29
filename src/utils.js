@@ -1,11 +1,12 @@
 const isString = require( 'lodash/isString' ),
-	isArray = require( 'lodash/isArray' ),
-	mergeWith = require( 'lodash/mergeWith' ),
-	replaceIfArray = ( to, from ) => (isArray( to ) ? from : undefined)
+	deepMerge = require( 'deepmerge' ),
+	deepMergeOptions = { arrayMerge: ( destinationArray, sourceArray, options ) => sourceArray }
 ;
 
 module.exports = {
-	merge: ( ...args ) => mergeWith( ...args, replaceIfArray ),
+	merge: ( target, source ) => {
+		return deepMerge( target, source, deepMergeOptions );
+	},
 	isStringLen: ( value, len ) => {
 		if( !isString( value ) ){ return false;}
 		return isNaN( len ) ? true : value.length >= len;

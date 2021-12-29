@@ -274,7 +274,7 @@ lab.experiment( '//__ TEST @dmidz/rest', function(){
 		} );
 	} );
 	
-	lab.test( 'read GET /SomeUnknownModel should return a 404 UknownModel.', function(){
+	lab.test( 'read GET /SomeUnknownModel should return a 404 UnknownModel.', function(){
 		return server.inject( {
 			method: 'GET',
 			url: plugin_rest.forgePath( 'SomeUnknownModel' ),
@@ -338,7 +338,7 @@ lab.experiment( '//__ TEST @dmidz/rest', function(){
 		.then( function( res ){
 			console.log( '# res :', res.payload/*, res.headers*/ );
 			expect( res.statusCode ).to.equal( 200 );
-			expect( res.result.result ).to.equal( 1 );
+			expect( res.result ).to.equal( 1 );
 			return server.inject( {
 				method: 'GET',
 				url: plugin_rest.forgePath( 'Task', 2 ),
@@ -356,11 +356,13 @@ lab.experiment( '//__ TEST @dmidz/rest', function(){
 	lab.test( 'update PATCH /Task/{id} invalid property should return a 422.', function(){
 		const changes = { title: null };
 		return server.inject( {
-			method: 'PATCH', url: plugin_rest.forgePath( 'Task', 2 ),
-			payload: changes, headers: { authorization: token }
+			method: 'PATCH',
+			url: plugin_rest.forgePath( 'Task', 2 ),
+			headers: { authorization: token },
+			payload: changes,
 		} )
 		.then( function( res ){
-			console.log( '### res :', res.result/*, res.headers*/ );
+			// console.log( '### res :', res.result/*, res.headers*/ );
 			expect( res.statusCode ).to.equal( 422 );
 		} )
 			;
@@ -375,7 +377,7 @@ lab.experiment( '//__ TEST @dmidz/rest', function(){
 		.then( function( res ){
 			console.log( '# res update :', res.payload/*, res.headers*/ );
 			expect( res.statusCode ).to.equal( 200 );
-			expect( res.result.result ).to.equal( 1 );
+			expect( res.result ).to.equal( 1 );
 			return server.inject( {
 				method: 'GET',
 				url: plugin_rest.forgePath( 'Task', 5 ),
@@ -406,7 +408,10 @@ lab.experiment( '//__ TEST @dmidz/rest', function(){
 	
 	lab.test( 'update PATCH /Task/{id} with NO payload should return a 422 UndefinedProperties.', function(){
 		return server.inject( {
-			method: 'PATCH', url: plugin_rest.forgePath( 'Task', 2 ), headers: { authorization: token }
+			method: 'PATCH',
+			url: plugin_rest.forgePath( 'Task', 2 ),
+			headers: { authorization: token },
+			// payload: { title: null },
 		} )
 		.then( function( res ){
 			console.log( '# res :', res.payload/*, res.headers*/ );

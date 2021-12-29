@@ -6,10 +6,6 @@ const Hapi = require( '@hapi/hapi' ),
 
 module.exports = async function( options ){
 	
-	// const res = {
-	// 	creds: {}
-	// };
-	
 	options = merge( {
 		server: {
 			host: 'localhost',

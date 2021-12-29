@@ -22,19 +22,20 @@
     "npm:publish": "npm publish --access public"
   },
   "dependencies": {
-    "@dmidz/crud": "^2.2.0",
+    "@dmidz/crud": "^2.3.4",
     "@hapi/boom": "^9.1.0",
     "bcrypt": "^5.0.0",
+    "deepmerge": "^4.2.2",
     "hapi-auth-jwt2": "^10.1.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20"
   },
   "peerDependencies": {},
   "devDependencies": {
-    "@hapi/code": "^8.0.2",
+    "@hapi/code": "^8.0.5",
     "@hapi/hapi": "^19.2.0",
     "@hapi/lab": "^23.0.0",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.2"
   },
   "engines": {
     "node": ">= 12.16.1",
