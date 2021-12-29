@@ -50,34 +50,31 @@ function ApiRest( server, options ){
 			// 	return payload;
 			// }
 			sign: { algorithm: 'HS256', expiresIn: '24h' },
-			strategy( rest, secret ){
-				return rest.server.register( require( 'hapi-auth-jwt2' ) )
-				.then( function(){
-					rest.server.auth.strategy( 'jwt', 'jwt', {
-						key: secret,
-						verifyOptions: { algorithms: [rest.options.auth.sign.algorithm] },// pick a strong algorithm
-						validate: async function( decoded, request, reply ){
-							// console.log('>>>>>> validate', decoded );
-							let user;
-							try{
-								user = await rest.options.auth.findUserWithProp( 'id', decoded.id, rest );
-							}catch( err ){
-								throw me.forgeRequestError( err );
-							}
-							
-							// console.log('>>> user found', user );
-							const res = {
-								isValid: !!user,
-							};
-							if( user && rest.options.auth.forgeCredentials ){
-								res.credentials = rest.options.auth.forgeCredentials( decoded, user );
-							}
-							return res;
-						},
-					} );
-					rest.server.auth.default( 'jwt' );
-					
+			strategy: async ( rest, secret ) => {
+				await rest.server.register( require( 'hapi-auth-jwt2' ) );
+				rest.server.auth.strategy( 'jwt', 'jwt', {
+					key: secret,
+					verifyOptions: { algorithms: [rest.options.auth.sign.algorithm] },// pick a strong algorithm
+					validate: async function( decoded, request, reply ){
+						// console.log('>>>>>> validate', decoded );
+						let user;
+						try{
+							user = await rest.options.auth.findUserWithProp( 'id', decoded.id, rest );
+						}catch( err ){
+							throw me.forgeRequestError( err );
+						}
+						
+						// console.log('>>> user found', user );
+						const res = {
+							isValid: !!user,
+						};
+						if( user && rest.options.auth.forgeCredentials ){
+							res.credentials = rest.options.auth.forgeCredentials( decoded, user );
+						}
+						return res;
+					},
 				} );
+				rest.server.auth.default( 'jwt' );
 			}
 			
 		},
