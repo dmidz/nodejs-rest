@@ -1,7 +1,7 @@
 const Hapi = require( '@hapi/hapi' ),
 	Path = require( 'path' ),
 	isNaN = require( 'lodash/isNaN' ),
-	{ merge, isStringLen } = require('../src/utils')
+	{ merge } = require('../src/utils')
 	;
 
 module.exports = async function( options ){
@@ -28,7 +28,7 @@ module.exports = async function( options ){
 					prefix: '/api'
 				},
 				options: {
-					debug: true,
+					debug: false,
 					debug_cleanup: false,
 					db_crud: {
 						dir_models: Path.join( __dirname, 'models' ),
@@ -103,8 +103,6 @@ module.exports = async function( options ){
 		register_options: {},
 		stackTraceLimit: null,
 	}, options, true );
-	// console.log('...proto', options.plugins['api-rest'].options.db_crud );
-	// console.log('...creating server', options );
 
 	if( !isNaN( options.stackTraceLimit ) ){
 		Error.stackTraceLimit = options.stackTraceLimit;}

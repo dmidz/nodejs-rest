@@ -31,9 +31,8 @@ function ApiRest( server, options ){
 				return user.get();
 			},
 			validateUser( user ){
-				// console.log('### validateIser', user );
 				if( user.disabled ) throw new Error( 'UserDisabled.' );
-				if( user.roles != 'admin' && ('confirmed' in user) && !user.confirmed ) throw new Error( 'InvalidUser' );//'UserNotConfirmed.' );
+				if( user.roles !== 'admin' && ('confirmed' in user) && !user.confirmed ) throw new Error( 'InvalidUser' );//'UserNotConfirmed.' );
 			},
 			forgePayload( user ){
 				const res = {
@@ -44,11 +43,6 @@ function ApiRest( server, options ){
 				if( user.scope ) res.scope = user.scope;
 				return res;
 			},
-			//__ TODO : remove forgeCrendentials as login is not used in authentication (only on login)
-			// , forgeCredentials( payload, user ){
-			// 	payload.login = user.login;
-			// 	return payload;
-			// }
 			sign: { algorithm: 'HS256', expiresIn: '24h' },
 			strategy: async ( rest, secret ) => {
 				await rest.server.register( require( 'hapi-auth-jwt2' ) );
@@ -56,7 +50,6 @@ function ApiRest( server, options ){
 					key: secret,
 					verifyOptions: { algorithms: [rest.options.auth.sign.algorithm] },// pick a strong algorithm
 					validate: async function( decoded, request, reply ){
-						// console.log('>>>>>> validate', decoded );
 						let user;
 						try{
 							user = await rest.options.auth.findUserWithProp( 'id', decoded.id, rest );
@@ -64,7 +57,6 @@ function ApiRest( server, options ){
 							throw me.forgeRequestError( err );
 						}
 						
-						// console.log('>>> user found', user );
 						const res = {
 							isValid: !!user,
 						};
@@ -93,73 +85,11 @@ function ApiRest( server, options ){
 				password: 'demo',
 				host: 'localhost',
 				pool: { max: 5, min: 0, idle: 10000 },
+				// logging: false,
 				storage: ':memory:'//Path.join( __dirname, 'data/db_test.sqlite' )
-				// , logging: console.log// false
 			},
-			models: {//__ key paired models options, samples :
-				// User: {
-				// 	sync: { force: true },
-				// 	roles: {
-				// 		admin: 1,
-				// 		user: { read: 'owner' }
-				// 	},
-				// 	mock: function( model ){
-				// 		return model.bulkCreate( [
-				// 			{ login: 'admin@domain.org', password: 'demo', roles: 'admin' },
-				// 			{ login: 'user1@domain.org', password: 'demo', roles: 'user', confirmed: 1 },
-				// 			{ login: 'user2@domain.org', password: 'demo', roles: 'user', confirmed: 1, disabled: 1 },
-				// 			{ login: 'user3@domain.org', password: 'demo', roles: 'user' },
-				// 			{ login: 'user4@domain.org', password: 'demo', roles: 'manager', confirmed: 1 }
-				// 		] )
-				// 		;
-				// 	}
-				// },
-				// Task: {
-				// 	sync: { force: true },
-				// 	// disabled:1,
-				// 	roles: {
-				// 		admin: 1,
-				// 		// , user: {
-				// 		// 	// create:
-				// 		// }
-				// 		manager: {
-				// 			create: 1,
-				// 			read: 1,
-				// 			update(){
-				// 				return {
-				// 					fields: ['title'],
-				// 					owner: true
-				// 				};
-				// 			},
-				// 			delete: 1
-				// 		},
-				// 		user: {
-				// 			create: function(){
-				// 				return {};
-				// 			},
-				// 			read: 'owner', update: 'owner', delete: 'owner'
-				// 		}
-				// 	},
-				// 	mock: function( model ){
-				// 		return model.bulkCreate( [
-				// 			{ title: 'Task 1', content: 'Content Task 1 owned by user 1', user_id: 1 },
-				// 			{ title: 'Task 2', content: 'Content Task 2 owned by user 2', user_id: 2 },
-				// 			{ title: 'Task 3', content: 'Content Task 3 owned by user 3', user_id: 3 },
-				// 			{ title: 'Task 4', content: 'Content Task 4 owned by user 4', user_id: 4 },
-				// 			{ title: 'Task 5', content: 'Content Task 5 owned by user 5', user_id: 5 }
-				// 		] )
-				// 		;
-				// 	}
-				// }
+			models: {
 			},
-			// onModels: function( models, Sequelize, plugin ){
-			// 	//__ good place for associations ( after all models loaded but before sync )
-			// 	// console.log( '...onModels', models, plugin );
-			// 	models.Task.hasMany( models.Task, { as: 'children', foreignKey: 'parent' } );
-			// 	// if( models.User ){
-			// 	// 	models.User.hasMany( models.Task, { foreignKey: 'user_id', as: 'tasks' } );
-			// 	// }
-			// }
 		},
 		cleanup_result: {
 			item_fields: ['name', 'errors', 'fields'],
@@ -336,7 +266,6 @@ Object.assign( ApiRest.prototype, {
 								single_key: request.params.id,
 								credentials: request.auth.credentials
 							} );
-							// console.log('>>> record', result );
 							if( !result ) throw new Error( 'RecordNotFound.' );
 							result = me.cleanupResult( result );
 							break;
@@ -347,7 +276,6 @@ Object.assign( ApiRest.prototype, {
 							}, {
 								credentials: request.auth.credentials
 							} );
-							console.log('>>> update result', result );
 							result = result[ request.params.id ];
 							if( result instanceof Error ) throw result;
 							
@@ -473,19 +401,16 @@ Object.assign( ApiRest.prototype, {
 	},
 	forgeRequestError( _err ){
 		let err = _err;
-		// console.log('>>> forgeRequestError', err );
 		// if( typeof err === 'string' )   err = new Error( err );
 		if( this.options.debug ) console.warn( '...request error :', err );
 		// if( !err.isBoom ){
 		if( err.name ){
 			const match = err.name.match( /sequelize([^ ]*)/i );
 			if( match ){
-				// console.log('### err sequelize', match );
 				const msg = err.toString();
 				err = this.cleanupResult( err );
-				const serr = (err.isBoom || match[ 1 ].toLowerCase() == 'scopeerror') ? err : Boom.badData( err );
+				const serr = (err.isBoom || match[ 1 ].toLowerCase() === 'scopeerror') ? err : Boom.badData( err );
 				serr.output.payload.message = msg;
-				// console.log('___ serr', typeof err.message );
 				if( err.errors ) serr.output.payload.errors = err.errors;
 				err = serr;
 				return err;
