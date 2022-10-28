@@ -13,7 +13,7 @@
     "url": "https://github.com/dmidz/nodejs-rest.git"
   },
   "scripts": {
-    "test": "lab test/unit.js -v -m 15000 -l",
+    "test": "lab test/unit.js -v -m 15000",
     "preversion": "npm test",
     "release:patch": "npm version patch -m \"release version %s\"",
     "release:minor": "npm version minor -m \"release version %s\"",
@@ -22,23 +22,23 @@
     "npm:publish": "npm publish --access public"
   },
   "dependencies": {
-    "@dmidz/crud": "^2.3.5",
-    "@hapi/boom": "^9.1.0",
-    "bcrypt": "^5.0.0",
+    "@dmidz/crud": "^2.4.0",
+    "@hapi/boom": "^9.1.4",
+    "bcrypt": "^5.1.0",
     "deepmerge": "^4.2.2",
-    "hapi-auth-jwt2": "^10.1.0",
+    "hapi-auth-jwt2": "^10.2.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20"
   },
   "devDependencies": {
-    "@hapi/code": "^8.0.5",
+    "@hapi/code": "^9.0.1",
     "@hapi/hapi": "^19.2.0",
-    "@hapi/lab": "^23.0.0",
-    "sqlite3": "^5.0.2"
+    "@hapi/lab": "^25.0.1",
+    "sqlite3": "^5.1.2"
   },
   "engines": {
-    "node": ">= 12.16.1",
-    "npm": ">= 6.13.4"
+    "node": ">= 16.17.0",
+    "npm": ">= 8.15.0"
   },
   "keywords": [
     "api",
